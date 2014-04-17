@@ -35,7 +35,9 @@
 set.seed(12345)
 
 
-# Create a function that takes
+# Create a function that takes the probability of team A winning a game on neutral ice, how much 
+# more likely home teams are to winning than if they were playing on neutral ice, and the number
+# of simulations we want for each set of p.teamA as inputs.
 function.probability.of.winning.series <- function(p.teamA=.5, p.home.ice=.04, n.simulations=1000){
 
   # Matrix to store how many games each team won in a simulated series.
