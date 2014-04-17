@@ -12,4 +12,4 @@ The script's user chooses three inputs:
 
 The script plots the results:
 
-![Home-ice advantage](https://github.com/jtwalsh0/home_ice_advantage/blob/master/home-ice%20advantage.png)
+![Home-ice advantage](https://raw.githubusercontent.com/jtwalsh0/home_ice_advantage/master/home-ice%20advantage.png)
