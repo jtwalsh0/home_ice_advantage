@@ -12,4 +12,4 @@ The script's user chooses three inputs:
 
 The script plots the results:
 
-<img src="https://www.dropbox.com/s/zu8xpumaze28tqc/home-ice%20advantage.png" width="658" align="center">
+![Home-ice advantage](https://github.com/jtwalsh0/home_ice_advantage/blob/master/home-ice%20advantage.png)
