@@ -10,6 +10,6 @@ The script's user chooses three inputs:
  2.  `p.home.ice` is the increased probability that team A beats team B on team A's ice and the probability that team B beats team A on team B's ice.  The default is 0.04, which was the single-game home-ice advantage in 2013 ([citation](http://www.sportingcharts.com/nhl/stats/team-home-and-away-winning-percentages/2013/)).
  3.  `n.simulations` is the number of series we would like to simulate for each `p.teamA`.  The more simulations we use, the more precise our estimates will be but the longer the estimates take to finish.
 
-The script plots the results.  Here is a plot using a home-ice advantage of 4% and 100,000 simulations:
+The script plots the results.  Here is a plot using a home-ice advantage of 4% and 500,000 simulations:
 
 ![Home-ice advantage](https://raw.githubusercontent.com/jtwalsh0/home_ice_advantage/master/home-ice%20advantage.png)
