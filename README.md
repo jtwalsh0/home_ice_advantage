@@ -11,6 +11,6 @@ This script uses simulation to estimate the probability of one team beating anot
  6.  `how.many.wins.teamB.has` enables the user to simulate from the middle of a series; that is, team B starts with 0, 1, 2, 3, or 4 wins
  7.  `n.simulations` is the number of series we would like to simulate for each `p.teamA`.  The more simulations we use, the more precise our estimates will be but the longer the estimate takes to finish.
 
-The script plots the results.  Here is a plot for the 2014 Boston-Detroit series before game 1 using a home-ice advantage of 4% and 10,000 simulations:
+The script plots the results.  Here is a plot for the 2014 Boston-Detroit series before game 1 assuming Boston would win 62% of its games against Detroit on neutral ice (I derived this number from the Vegas odds) and a home-ice advantage of 4%.  I used 10,000 simulations:
 
 ![Boston-Detroit series](https://raw.githubusercontent.com/jtwalsh0/home_ice_advantage/master/Boston-Detroit%20series%20before%20game%201.png)
