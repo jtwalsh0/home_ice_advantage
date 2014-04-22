@@ -10,49 +10,39 @@
 
 
 ## This script uses simulation to estimate the probability of one team beating
-## another in a seven-game series and to plot the results.  The user can choose the
-## following inputs: 
-##   - teamA.name is the name of the team with home-ice advantage (7th game played there)
-##   - teamB.name is the name of the team without home-ice advantage
-##   - p.teamA is the probability that team A beats team B on neutral ice
+## another in a seven-game series.  Many observers argue that playing the majority
+## of games on one's own ice significantly increases the probability of winning 
+## the series; for example, see Nicholas Goss's article in Bleacher Report
+## (http://bleacherreport.com/articles/1630882-how-much-does-home-ice-matter-in-the-stanley-cup-playoffs).
+## It is true that teams with home-ice advantage tend to win their series, but they 
+## also tend to get there by being the better team.  How important is home-ice
+## advantage once we control for the relative quality of the teams?
+##
+## The script's user chooses three inputs: 
+##   - p.teamA is the probability that team A
 ##   - p.home.ice is the increased probability that team A beats team B on team A's
 ##     ice and the probability that team B beats team A on team B's ice.  The 
 ##     default is 0.04, which was the single-game home-ice advantage in 2013 (see
 ##     http://www.sportingcharts.com/nhl/stats/team-home-and-away-winning-percentages/2013/).
-##   - how.many.wins.teamA.has enables the user to simulate from the middle of a series, 
-##     e.g. team A starts with 0, 1, 2, 3, or 4 wins.
-##   - how.many.wins.teamB.has enables the user to simulate from the middle of a series, 
-##     e.g. team B starts with 0, 1, 2, 3, or 4 wins.
 ##   - n.simulations is the number of series we would like to simulate for each p.teamA.
 ##     The more simulations we use, the more precise our estimates will be but the
 ##     longer the estimate takes to finish.
 ##
-## The script creates a barplot of the results.
+## The script plots the results.
 
 
 # Set the seed for replicability
 set.seed(12345)
 
 
-# Create a function that takes the probability of team A winning a game on neutral ice, how much 
-# more likely home teams are to winning than if they were playing on neutral ice, and the number
-# of simulations we want for each set of p.teamA as inputs.
-function.probability.of.winning.series <- function(p.teamA=.5, 
-                                                   p.home.ice=.04, 
-                                                   how.many.wins.teamA.has=0,
-                                                   how.many.wins.teamB.has=0,
-                                                   n.simulations=1000){
+# Create a function that takes
+function.probability.of.winning.series <- function(p.teamA=.5, p.home.ice=.04, n.simulations=1000){
 
   # Matrix to store how many games each team won in a simulated series.
   # Each team starts with zero wins.
   series.results <- matrix(0, nrow=n.simulations, ncol=2)
     colnames( series.results ) <- c("TeamA", "TeamB")
-  
-    # We can simulate from the current state of the series, e.g. 0 games to 0, 1 game to 0,
-    # 3 games to 1, 1 game to 3.
-    series.results[,1] <- how.many.wins.teamA.has
-    series.results[,2] <- how.many.wins.teamB.has
-    
+
   # At the extremes (e.g. probability of sharks winning is .01 and home-ice
   # advantage is .03), the probabilities can top 1 or drop below 0.  Fix that.
   with.home.ice <- p.teamA + p.home.ice
@@ -93,60 +83,50 @@ function.probability.of.winning.series <- function(p.teamA=.5,
   # arithmetic operations -- go ahead, type TRUE + TRUE and see what you get --
   # so I use the mean function and apply to get the proportion of series wins
   # for each team.
-  #return( apply(series.results==4, 2, mean) )
-  
-  # Return a list with series outcomes
-    list( teamA.4games_teamB.0games = mean( series.results[,1]==4 & series.results[,2]==0 ),
-          teamA.4games_teamB.1games = mean( series.results[,1]==4 & series.results[,2]==1 ),
-          teamA.4games_teamB.2games = mean( series.results[,1]==4 & series.results[,2]==2 ),
-          teamA.4games_teamB.3games = mean( series.results[,1]==4 & series.results[,2]==3 ),
-          teamA.3games_teamB.4games = mean( series.results[,1]==3 & series.results[,2]==4 ),
-          teamA.2games_teamB.4games = mean( series.results[,1]==2 & series.results[,2]==4 ),
-          teamA.1games_teamB.4games = mean( series.results[,1]==1 & series.results[,2]==4 ),
-          teamA.0games_teamB.4games = mean( series.results[,1]==0 & series.results[,2]==4 )
-          )
+  return( apply(series.results==4, 2, mean) )
 
 }
 
 
 
+# Matrix to store results for home-ice advantage of .00 (no advantage)
+matrix.probability.of.winning.series.00 <- matrix(NA, nrow=101, ncol=2)
+  rownames(matrix.probability.of.winning.series.00) <- paste("p = ", 0:100/100, sep="")
+  colnames(matrix.probability.of.winning.series.00) <- c("teamA", "teamB")
 
+# Matrix to store results for home-ice advantage of .04
+matrix.probability.of.winning.series.04 <- matrix(NA, nrow=101, ncol=2)
+  rownames(matrix.probability.of.winning.series.04) <- paste("p = ", 0:100/100, sep="")
+  colnames(matrix.probability.of.winning.series.04) <- c("teamA", "teamB")
 
-
-## Plot relative frequency of series outcomes (sweeps, 4 games to 1, 3 games to 4, etc.)
-plot_series_results <- function(teamA.name="teamA", 
-                                teamB.name="teamB",
-                                plot_function_p.teamA=.5, 
-                                plot_function_p.home.ice=.04, 
-                                plot_function_how.many.wins.teamA.has=0, 
-                                plot_function_how.many.wins.teamB.has=0, 
-                                plot_function_n.simulations=1000){
+for(i in 1:101){
   
-  # Call the simulation function
-  simulated_results <- function.probability.of.winning.series(p.teamA=plot_function_p.teamA,
-                                                              p.home.ice=plot_function_p.home.ice, 
-                                                              how.many.wins.teamA.has=plot_function_how.many.wins.teamA.has, 
-                                                              how.many.wins.teamB.has=plot_function_how.many.wins.teamB.has, 
-                                                              n.simulations=plot_function_n.simulations)
+  # Print the value of p.teamA so the user knows much progress the computer has made
+  print((i-1)/100)
   
-  pr.teamA.wins.series <- round( sum(unlist(simulated_results)[1:4]), 2)
-  # Barplot the simulated results
-  barplot(unlist(simulated_results),
-          names.arg=c("4-0", "4-1", "4-2", "4-3", "3-4", "2-4", "1-4", "0-4"),
-          main=paste(teamA.name, "-", teamB.name, "Simulated Series"),
-          sub=paste("Pr(" , teamA.name, " wins the series) = ", pr.teamA.wins.series, sep=""),
-          xlab=paste(teamA.name, "wins -", teamB.name, "wins", sep=" "),
-          ylab="estimated probability")
+  # Store the results of no home-ice advantage in the appropriate matrix
+  matrix.probability.of.winning.series.00[i,] <- function.probability.of.winning.series( p.teamA=(i-1)/100, p.home.ice=.00, n.simulations <- 1000 )
+  
+  # Store the results of home-ice advantage (4% is the default)
+  matrix.probability.of.winning.series.04[i,] <- function.probability.of.winning.series( p.teamA=(i-1)/100, p.home.ice=.04, n.simulations <- 1000 )
 
 }
 
 
+# Plot the results
+png("home-ice advantage.png")
+  
+  plot(x=c(0,1), y=c(0,1), type='n', axes=FALSE, 
+       main="Home-Ice Advantage",
+       xlab="Pr(Team A beats Team B on neutral ice)",
+       ylab="Pr(Team A beats Team B in a seven-game series)")
+  
+  axis(1, at=0:10/10, labels=0:10/10)
+  axis(2)
+  
+  points(0:100/100, matrix.probability.of.winning.series.00[,1], type='l', col='black')
+  points(0:100/100, matrix.probability.of.winning.series.04[,1], type='l', col='red')
+  
+  legend('topleft', lwd=2, col=c("black","red"), legend=c("no advantage", "home ice advantage 4%"))
 
-# Example: Boston-Detroit series before game 1
-plot_series_results(teamA.name="Boston", 
-                    teamB.name="Detroit", 
-                    plot_function_p.teamA=.62, 
-                    plot_function_p.home.ice=.04, 
-                    plot_function_how.many.wins.teamA.has=0, 
-                    plot_function_how.many.wins.teamB.has=0, 
-                    plot_function_n.simulations=10000)
+dev.off()
